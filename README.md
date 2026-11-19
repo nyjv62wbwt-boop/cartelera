@@ -81,6 +81,8 @@ Cada ejecución queda registrada en `sync_runs` (nuevos, modificados, ausentes, 
 
 ## La web
 
+- Número de taquilla («Taquilla 5», «Taquilla infantil 3») visible en cada tarjeta y en la ficha, para buscar el canal en la
+  aplicación de IPTV; también se puede escribir en el buscador.
 - Portada: novedad destacada, accesos rápidos por categoría y género, filas de últimas películas y series, destacadas
   (valoración ponderada por votos), Infantiles, una fila por género con contenido y las salas del Taquillazo.
 - Buscador en la cabecera (atajo `/`): en tiempo real con *debounce*, sobre **todo** el catálogo, sin mayúsculas ni acentos,

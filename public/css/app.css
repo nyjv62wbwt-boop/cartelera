@@ -174,6 +174,14 @@ h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; let
 .badge-type { left: 8px; background: rgba(11, 13, 18, 0.72); color: var(--text); border-left: 3px solid var(--movie); }
 .badge-tv { border-left-color: var(--tv); }
 .badge-sala { border-left-color: var(--sala); }
+.badge-channel {
+  top: auto; bottom: 8px; left: 8px; z-index: 2; max-width: calc(100% - 16px);
+  background: var(--accent); color: var(--accent-ink); font-size: 12px; padding: 6px 8px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.badge-channel ~ .card-hover { padding-bottom: 38px; }
+.detail-channel { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 10px; }
+.detail-channel span { background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 15px; padding: 6px 12px; border-radius: 8px; }
 .badge-rating { left: 8px; top: 33px; background: rgba(11, 13, 18, 0.72); color: var(--star); }
 .card-hover {
   position: absolute; inset: auto 0 0 0; z-index: 1; padding: 40px 12px 12px;

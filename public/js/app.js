@@ -166,6 +166,11 @@ function metaLine(it) {
   return parts.join(' · ');
 }
 
+/** Taquilla(s) donde está el título, p. ej. «Taquilla 5» (para buscarlo en la app de IPTV). */
+function channelsOf(it) {
+  return [...new Set((it.categories || []).map((c) => c.channel).filter(Boolean))];
+}
+
 function cardHtml(it, { eager = false } = {}) {
   const fav = state.favorites.has(it.id);
   const rating = it.rating != null ? `<span class="badge badge-rating" title="Valoración TMDB">★ ${it.rating.toFixed(1).replace('.', ',')}</span>` : '';
@@ -178,6 +183,7 @@ function cardHtml(it, { eager = false } = {}) {
         ${posterImg(it, { eager })}
         <span class="badge badge-type badge-${it.type}">${TYPE_LABEL[it.type]}</span>
         ${rating}
+        ${channelsOf(it).length ? `<span class="badge badge-channel" title="Canal en la cartelera">${esc(channelsOf(it).join(' · '))}</span>` : ''}
         ${hover}
       </div>
       <div class="card-body">
@@ -803,6 +809,7 @@ function detailHtml(it, { loading = false } = {}) {
         <div class="detail-poster">${posterImg(it, { eager: true, sizes: '(max-width: 700px) 40vw, 260px' })}</div>
         <div class="detail-head">
           <p class="eyebrow">${esc(TYPE_LABEL[it.type])}${it.categories?.length ? ` · ${esc(it.categories.map((c) => c.label).join(', '))}` : ''}</p>
+          ${channelsOf(it).length ? `<p class="detail-channel" title="Búscalo con este nombre en tu aplicación de IPTV">${channelsOf(it).map((ch) => `<span>${esc(ch)}</span>`).join('')}</p>` : ''}
           <h1 id="detail-title" class="${it.title ? '' : 'is-muted'}">${esc(displayTitle(it))}</h1>
           ${it.originalTitle ? `<p class="detail-original">Título original: <i>${esc(it.originalTitle)}</i></p>` : ''}
           ${facts.length || it.rating != null ? `<ul class="facts">
