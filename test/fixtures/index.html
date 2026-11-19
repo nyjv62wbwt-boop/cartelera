@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cajón de Contenidos - Inicio</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="aviso" class="overlay">
+        <div class="modal-content">
+            <h1>AVISO DE ADMINISTRACIÓN</h1>
+            <p style="font-size: 30px;">Desde la administración de <strong>Cajón de Contenidos</strong>, informamos que no se admiten peticiones. Gracias por su comprensión.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="logo-cine">
+            <h1>Cajón de Contenidos</h1>
+            <p>BIENVENIDOS A LA CARTELERA</p>
+        </div>
+
+        <div class="menu-tickets">
+            <a href="taquillazo.html" class="ticket">Taquillazo</a>
+            <a href="taquillas.html" class="ticket">Taquillas</a>
+            <a href="infantiles.html" class="ticket">Taq. Infantiles</a>
+            <a href="series.html" class="ticket">Series</a>
+        </div>
+
+        <div class="zona-inferior">
+            <div class="marquesina">
+                <div class="luces"></div>
+                <div class="texto-movil">
+                    <span>🍿 CARTELERA ACTUALIZADA • DISFRUTA DEL MEJOR CONTENIDO • PINCHEN EN LAS PESTAÑAS QUE DESEAN VER 🍿</span>
+                </div>
+                <div class="luces"></div>
+            </div>
+
+            <div class="movies">
+                <div class="movie">
+                    <a href="taquillas.html">
+                        <img src="https://media.themoviedb.org/t/p/w220_and_h330_face/nijGyrqQbDhSGss4uugQokvBAsG.jpg" alt="Estreno">
+                        <div class="cartel-info">
+                            <span class="badge estreno">EN LOS CINES</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="movie">
+                    <a href="taquillas.html">
+                        <img src="https://media.themoviedb.org/t/p/w220_and_h330_face/tluwRNA7k0XfTtDkdLYKX1KOSCJ.jpg" alt="Estreno">
+                        <div class="cartel-info">
+                            <span class="badge estreno">EN LOS CINES</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('aviso').style.display = 'none';
+        }, 5000);
+    </script>
+</body>
+</html>

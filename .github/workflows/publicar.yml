@@ -1,0 +1,99 @@
+# Sincroniza la cartelera con la web original y publica la web en GitHub Pages (gratis).
+# - Automático cada 12 horas (cambia la línea "cron" para otro intervalo; hora en UTC).
+# - Manual: pestaña Actions -> "Sincronizar y publicar" -> "Run workflow" (casilla "forzar" opcional).
+# - La base de datos se conserva entre ejecuciones en la rama "datos" (un único commit, sin historial).
+# - La clave de TMDB va en Settings -> Secrets and variables -> Actions -> TMDB_API_KEY (nunca en el código).
+name: Sincronizar y publicar
+
+on:
+  schedule:
+    - cron: '17 */12 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Forzar (aceptar páginas con muchos menos títulos que antes)'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cartelera
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      sync_outcome: ${{ steps.sync.outcome }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Recuperar la base de datos anterior
+        run: |
+          mkdir -p data
+          if git fetch --depth=1 origin datos 2>/dev/null; then
+            git show FETCH_HEAD:catalog.db > data/catalog.db
+            echo "Base de datos recuperada ($(du -h data/catalog.db | cut -f1))"
+          else
+            echo "Primera ejecución: se creará la base de datos"
+          fi
+
+      - name: Pruebas
+        run: npm test
+
+      - name: Sincronizar con la cartelera original
+        id: sync
+        continue-on-error: true
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          DISABLE_SCHEDULER: 'true'
+        run: node src/cli-sync.js ${{ inputs.force && '--force' || '' }}
+
+      - name: Generar la web estática
+        run: node src/build-static.js dist
+
+      - name: Guardar la base de datos en la rama "datos"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tmp=$(mktemp -d)
+          cp data/catalog.db "$tmp/"
+          cd "$tmp"
+          git init -q -b datos
+          git add catalog.db
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "Catálogo $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -qf "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" datos
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: sync
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      # Si la sincronización falló, se publica igualmente el catálogo anterior y el run se marca en rojo
+      # para que GitHub avise por correo.
+      - name: Avisar si la sincronización falló
+        if: needs.sync.outputs.sync_outcome == 'failure'
+        run: |
+          echo "La sincronización falló; se ha publicado el catálogo anterior. Revisa el paso 'Sincronizar' del job sync."
+          exit 1

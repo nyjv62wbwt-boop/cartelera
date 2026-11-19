@@ -1,0 +1,16 @@
+{
+  "name": "cartelera-cajon",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cartelera mejorada y sincronizada automáticamente con la web de Cajón de Contenidos",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "sync": "node src/cli-sync.js",
+    "test": "node --test test/",
+    "build": "node src/build-static.js"
+  }
+}

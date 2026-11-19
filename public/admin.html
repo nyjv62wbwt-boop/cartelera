@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b0d12">
+  <title>Sincronización · Cajón de Contenidos</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <script type="module" src="/js/admin.js"></script>
+</head>
+<body class="admin">
+  <header class="topbar is-scrolled">
+    <a class="brand" href="/#/">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="26" height="18" rx="4" fill="currentColor"/><path d="M13 12.5v7l6-3.5z" fill="#0b0d12"/></svg>
+      <span class="brand-text">Cajón <b>· Administración</b></span>
+    </a>
+    <nav class="mainnav" aria-label="Administración">
+      <a href="/#/">Ver cartelera</a>
+    </nav>
+    <button class="btn btn-ghost admin-logout" id="logout" type="button" hidden>Cerrar sesión</button>
+  </header>
+
+  <main id="main" class="admin-main">
+    <section class="login" id="login" hidden>
+      <h1>Panel de sincronización</h1>
+      <p>Introduce el token de administración. Está en la variable <code>ADMIN_TOKEN</code> del servidor o, si no la definiste, en <code>data/admin-token.txt</code>.</p>
+      <form id="login-form" class="login-form">
+        <label class="field"><span>Token</span><input id="token" type="password" autocomplete="current-password" required></label>
+        <button class="btn btn-primary" type="submit">Entrar</button>
+      </form>
+      <p class="form-msg" id="login-msg" role="alert"></p>
+    </section>
+
+    <div id="app" hidden>
+      <section class="panel-head">
+        <div>
+          <h1>Sincronización con la cartelera original</h1>
+          <p class="muted" id="source-url"></p>
+        </div>
+        <div class="sync-actions">
+          <label class="check"><input type="checkbox" id="force"> Forzar (aceptar páginas con muchos menos títulos)</label>
+          <button class="btn btn-primary" type="button" id="sync-now">Sincronizar ahora</button>
+        </div>
+      </section>
+      <div id="flash" class="flash" role="status" aria-live="polite"></div>
+
+      <section class="stats" id="stats" aria-label="Estado"></section>
+
+      <section class="admin-grid">
+        <article class="card-panel">
+          <h2>Programación</h2>
+          <form id="settings" class="settings-form">
+            <label class="field"><span>Intervalo entre sincronizaciones (horas)</span><input id="interval" type="number" min="1" max="168" step="1" required></label>
+            <label class="field"><span>Marcar como no disponible tras N sincronizaciones sin aparecer</span><input id="threshold" type="number" min="1" max="30" step="1" required></label>
+            <button class="btn btn-ghost" type="submit">Guardar</button>
+          </form>
+          <p class="muted small" id="tmdb-status"></p>
+        </article>
+        <article class="card-panel">
+          <h2>Páginas de origen</h2>
+          <table class="table compact"><thead><tr><th>Página</th><th>Modificada en origen</th><th>Última consulta</th></tr></thead><tbody id="sources"></tbody></table>
+        </article>
+      </section>
+
+      <section class="card-panel">
+        <h2>Historial de sincronizaciones</h2>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>Inicio</th><th>Origen</th><th>Estado</th><th>Nuevos</th><th>Modificados</th><th>Ausentes</th><th>No disp.</th><th>Metadatos</th><th>Detalle</th></tr></thead>
+          <tbody id="runs"></tbody>
+        </table></div>
+      </section>
+
+      <section class="card-panel">
+        <div class="content-head">
+          <h2>Contenido</h2>
+          <div class="seg" role="group" aria-label="Filtrar contenido" id="content-filter">
+            <button type="button" data-filter="unidentified" aria-pressed="true">Sin identificar</button>
+            <button type="button" data-filter="unavailable" aria-pressed="false">Ausentes</button>
+            <button type="button" data-filter="duplicates" aria-pressed="false">Posibles duplicados</button>
+            <button type="button" data-filter="errors" aria-pressed="false">Errores</button>
+            <button type="button" data-filter="all" aria-pressed="false">Todo</button>
+          </div>
+        </div>
+        <p class="muted small" id="content-help"></p>
+        <div id="content-list" class="content-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="editor" class="editor">
+    <form method="dialog" class="editor-inner" id="editor-form"></form>
+  </dialog>
+</body>
+</html>
