@@ -19,6 +19,23 @@ El token del panel `/admin` es `ADMIN_TOKEN` o, si no lo defines, el que se gene
 Para que la sincronización siga funcionando sin dejar el servidor abierto, programa `npm run sync` con el
 Programador de tareas de Windows (o cron). Hay un bloqueo en la base de datos que impide que se solapen dos ejecuciones.
 
+## Publicación gratuita (GitHub Pages + GitHub Actions)
+
+El workflow [.github/workflows/publicar.yml](.github/workflows/publicar.yml) hace en GitHub, sin tu PC:
+sincronización cada 12 h → genera la web estática (`npm run build` → `dist/`) → la publica en GitHub Pages.
+La base de datos se conserva en la rama `datos`. La clave de TMDB va como *secret* y nunca llega al navegador.
+
+1. Crea un repositorio **público** vacío en GitHub y sube este proyecto (`git push -u origin main`).
+2. *Settings → Secrets and variables → Actions → New repository secret*: `TMDB_API_KEY` = tu clave.
+3. *Settings → Pages → Build and deployment → Source*: **GitHub Actions**.
+4. *Actions → Sincronizar y publicar → Run workflow*. La web queda en `https://<usuario>.github.io/<repositorio>/`.
+
+En la versión pública no hay panel `/admin` (no hay servidor): el estado de cada sincronización (nuevos, modificados,
+ausentes, errores) aparece en el resumen de cada ejecución en *Actions*, el botón *Run workflow* es la sincronización
+manual (con casilla «forzar») y GitHub avisa por correo si una ejecución falla. Para cambiar el intervalo, edita la
+línea `cron` del workflow (hora UTC). GitHub puede pausar los workflows programados de un repositorio sin actividad
+durante 60 días; se reactivan con un clic en *Actions*. El panel `/admin` completo sigue disponible con `npm start`.
+
 ## Análisis de la web original
 
 | Aspecto | Lo que hay realmente |
