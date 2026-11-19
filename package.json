@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node src/server.js",
     "sync": "node src/cli-sync.js",
-    "test": "node --test test/",
+    "test": "node --test \"test/*.test.js\"",
     "build": "node src/build-static.js"
   }
 }
